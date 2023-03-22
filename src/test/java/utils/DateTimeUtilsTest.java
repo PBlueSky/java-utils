@@ -11,17 +11,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.concurrent.TimeUnit;
 
 public class DateTimeUtilsTest {
     @Test
     public void testGetCurrentDateTime(){
-        LocalDateTime now = DateTimeUtils.getCurrentDateTime();
+        LocalDateTime now = DateTimeUtils.getNowDateTime();
         System.out.println(now);
     }
 
     @Test
     public void testGetTimeStamp(){
-        System.out.println(DateTimeUtils.getTimeStamp());
+        System.out.println(DateTimeUtils.getTimeStampWithSecond());
     }
 
     /**
@@ -34,8 +35,8 @@ public class DateTimeUtilsTest {
     @Test
     public void testZoneTimeStrToOtherZoneTimeStr(){
         String dateTimeStr = "2023-03-21 08:34:06";
-        Long timeStamp = DateTimeUtils.zoneStrToTimeStamp(dateTimeStr, DateTimeUtils.FORMATTER_FULL, ZoneId.of("-8"));
-        LocalDateTime localDateTime = DateTimeUtils.timeStampToZoneTime(timeStamp, ZoneId.of("+8"));
+        Long timeStamp = DateTimeUtils.strToTimeStamp(dateTimeStr, DateTimeUtils.FORMATTER_FULL, ZoneId.of("-8"), TimeUnit.MILLISECONDS);
+        LocalDateTime localDateTime = DateTimeUtils.timeStampToZoneTime(timeStamp, ZoneId.of("+8"),TimeUnit.MILLISECONDS);
         Assertions.assertEquals("2023-03-21T16:34:06",localDateTime.toString());
     }
 
@@ -43,7 +44,7 @@ public class DateTimeUtilsTest {
     @Test
     public void testZoneTimeToOtherZoneTime(){
         // UTC to Local time
-        LocalDateTime UTC = DateTimeUtils.getCurrentDateTime(ZoneId.of("Z"));
+        LocalDateTime UTC = DateTimeUtils.getNowDateTime(ZoneId.of("Z"));
         LocalDateTime localDateTime = DateTimeUtils.ZoneTimeToOtherZoneTime(UTC, ZoneId.of("+8"));
         System.out.println(localDateTime);
     }

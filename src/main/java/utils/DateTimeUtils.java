@@ -10,6 +10,8 @@ package utils;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 
 
 public class DateTimeUtils {
@@ -21,69 +23,94 @@ public class DateTimeUtils {
      * 获取中国当前标准日期时间
      * @return 当前日期时间
      */
-    public static LocalDateTime  getCurrentDateTime(){
-        return getCurrentDateTime(ZoneId.of("Asia/Shanghai"));
+    public static LocalDateTime  getNowDateTime(){
+        return getNowDateTime(ZoneId.of("Asia/Shanghai"));
     }
 
     /**根据时区获取当前日期时间
      * @param zoneId 时区
      * @return 当前日期时间
      */
-    public static LocalDateTime  getCurrentDateTime(ZoneId zoneId){
+    public static LocalDateTime  getNowDateTime(ZoneId zoneId){
         return LocalDateTime.now(zoneId);
     }
 
     /**获取当前UTC时间戳 从1970:01:01 00:00:00（1970-01-01T00:00:00Z） 到当前时刻的毫秒数
      * @return 时间戳
      */
-    public static Long  getTimeStamp(){
+    public static Long  getTimeStampWithMilli(){
         return Instant.now().toEpochMilli();
     }
 
+    /**获取当前UTC时间戳 从1970:01:01 00:00:00（1970-01-01T00:00:00Z） 到当前时刻的秒数
+     * @return 时间戳
+     */
+    public static Long  getTimeStampWithSecond(){
+        return Instant.now().getEpochSecond();
+    }
+
     /**
-     * 将字符串转成 当前时间
+     * 将字符串转成当前时间
      * @param dateTimeStr 时间
-     * @param dataFormatterStr 时间字符串格式
+     * @param formatterStr 时间字符串格式
      * @return LocalDateTime
      */
-    public static LocalDateTime strToLocalDateTime(String dateTimeStr,String dataFormatterStr) {
-        DateTimeFormatter df = DateTimeFormatter.ofPattern(dataFormatterStr);
+    public static LocalDateTime strToLocalDateTime(String dateTimeStr,String formatterStr) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(formatterStr);
         return LocalDateTime.parse(dateTimeStr, df);
     }
 
     /**
-     * 将字符串转成当前时区时间
+     * 将字符串转成指定的时区时间
      * @param dateTimeStr 时间
-     * @param dataFormatterStr 时间字符串格式
+     * @param formatterStr 时间字符串格式
      * @param zoneId 时区
      * @return LocalDateTime
      */
-    public static LocalDateTime strToLocalZoneDateTime(String dateTimeStr,String dataFormatterStr,ZoneId zoneId) {
-        DateTimeFormatter df = DateTimeFormatter.ofPattern(dataFormatterStr).withZone(zoneId);
+    public static LocalDateTime strToZoneDateTime(String dateTimeStr,String formatterStr,ZoneId zoneId) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(formatterStr).withZone(zoneId);
         return LocalDateTime.parse(dateTimeStr, df);
     }
 
     /**
      * 将指定时区的日期时间字符串转换成UTC时间戳
      * @param dateTimeStr  满足dataFormatterStr格式的日期时间字符串
-     * @param dataFormatterStr 日期时间格式
+     * @param formatterStr 日期时间格式
      * @param zoneId 时区
      * @return UTC时间戳
      */
-    public static Long zoneStrToTimeStamp(String dateTimeStr,String dataFormatterStr,ZoneId zoneId) {
-        DateTimeFormatter df = DateTimeFormatter.ofPattern(dataFormatterStr).withZone(zoneId);
+    public static Long strToTimeStamp(String dateTimeStr,String formatterStr,ZoneId zoneId,TimeUnit timeUnit) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(formatterStr).withZone(zoneId);
         LocalDateTime localDateTime = LocalDateTime.parse(dateTimeStr, df);
-        return localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
+        switch (timeUnit){
+            case SECONDS:
+                return localDateTime.toInstant(ZoneOffset.UTC).getEpochSecond();
+            case MILLISECONDS:
+                return localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
+            default:
+                throw new IllegalArgumentException("不支持的时间单位"+timeUnit);
+        }
     }
+
 
     /**
      * 将UTC时间戳转换为指定的时区时间
-     * @param timeStamp 时间戳
+     * @param timeStamp 时间戳(毫秒)
      * @param zoneId 时区
      * @return 时区时间
      */
-    public static LocalDateTime timeStampToZoneTime(Long timeStamp,ZoneId zoneId) {
-        Instant instant = Instant.ofEpochMilli(timeStamp);
+    public static LocalDateTime timeStampToZoneTime(Long timeStamp, ZoneId zoneId, TimeUnit timeStampUnit) {
+        Instant instant = null;
+        switch (timeStampUnit){
+            case SECONDS:
+                instant = Instant.ofEpochSecond(timeStamp);
+                break;
+            case MILLISECONDS:
+                instant = Instant.ofEpochMilli(timeStamp);
+                break;
+            default:
+                throw new IllegalArgumentException("不支持的时间单位"+timeStampUnit);
+        }
         return LocalDateTime.ofInstant(instant,zoneId);
     }
 
@@ -95,7 +122,7 @@ public class DateTimeUtils {
      */
     public static LocalDateTime ZoneTimeToOtherZoneTime(LocalDateTime from,ZoneId otherZoneId){
         long timeStamp = from.toInstant(ZoneOffset.UTC).toEpochMilli();
-        return timeStampToZoneTime(timeStamp,otherZoneId);
+        return timeStampToZoneTime(timeStamp,otherZoneId,TimeUnit.MILLISECONDS);
     }
 
     /**
