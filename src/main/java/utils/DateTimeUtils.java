@@ -77,6 +77,7 @@ public class DateTimeUtils {
      * @param dateTimeStr  满足dataFormatterStr格式的日期时间字符串
      * @param formatterStr 日期时间格式
      * @param zoneId 时区
+     * @param timeUnit 时间戳的单位，仅支持秒（TimeUnit.SECONDS）和毫秒（TimeUnit.MILLISECONDS）
      * @return UTC时间戳
      */
     public static Long strToTimeStamp(String dateTimeStr,String formatterStr,ZoneId zoneId,TimeUnit timeUnit) {
@@ -97,6 +98,7 @@ public class DateTimeUtils {
      * 将UTC时间戳转换为指定的时区时间
      * @param timeStamp 时间戳(毫秒)
      * @param zoneId 时区
+     * @param timeStampUnit 时间戳的单位，仅支持秒（TimeUnit.SECONDS）和毫秒（TimeUnit.MILLISECONDS）
      * @return 时区时间
      */
     public static LocalDateTime timeStampToZoneTime(Long timeStamp, ZoneId zoneId, TimeUnit timeStampUnit) {
