@@ -50,6 +50,17 @@ public class DateTimeUtils {
     }
 
     /**
+     * 当前时间转成字符串
+     * @param localDateTime 日期时间对象
+     * @param formatterStr 时间字符串格式
+     * @return 字符串
+     */
+    public static String localDateTimeToStr(LocalDateTime localDateTime,String formatterStr) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(formatterStr);
+        return df.format(localDateTime);
+    }
+
+    /**
      * 将字符串转成当前时间
      * @param dateTimeStr 时间
      * @param formatterStr 时间字符串格式

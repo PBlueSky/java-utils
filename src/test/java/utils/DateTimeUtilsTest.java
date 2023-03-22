@@ -48,4 +48,10 @@ public class DateTimeUtilsTest {
         LocalDateTime localDateTime = DateTimeUtils.ZoneTimeToOtherZoneTime(UTC, ZoneId.of("+8"));
         System.out.println(localDateTime);
     }
+
+    @Test
+    public void testLocalDateTimeToStr(){
+        String str = DateTimeUtils.localDateTimeToStr(LocalDateTime.now(), DateTimeUtils.FORMATTER_FULL);
+        System.out.println(str);
+    }
 }
