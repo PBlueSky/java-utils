@@ -18,6 +18,8 @@ public class DateTimeUtils {
     public static final String FORMATTER_FULL = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_STR = "yyyy-MM-dd";
 
+    private DateTimeUtils() {
+    }
 
     /**
      * 获取中国当前标准日期时间
@@ -133,7 +135,7 @@ public class DateTimeUtils {
      * @param otherZoneId  另一个时区
      * @return 一个时区的时间
      */
-    public static LocalDateTime ZoneTimeToOtherZoneTime(LocalDateTime from,ZoneId otherZoneId){
+    public static LocalDateTime zoneTimeToOtherZoneTime(LocalDateTime from,ZoneId otherZoneId){
         long timeStamp = from.toInstant(ZoneOffset.UTC).toEpochMilli();
         return timeStampToZoneTime(timeStamp,otherZoneId,TimeUnit.MILLISECONDS);
     }
