@@ -16,6 +16,10 @@ import java.io.IOException;
 public class JSONUtils {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+
+    private JSONUtils() {
+    }
+
     /**
      * 将对象序列化为json
      * @param obj 对象
